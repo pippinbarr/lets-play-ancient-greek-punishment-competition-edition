@@ -7,9 +7,9 @@ let Menu = new Phaser.Class({
     },
 
     create: function () {
-      this.cameras.main.setBackgroundColor('#000');
-      let titleStyle = { fontFamily: 'Commodore', fontSize: '38px', fill: '#aadddd', wordWrap: true, align: 'center' };
-      let title = this.add.text(this.game.canvas.width/2,100,"LET'S PLAY:\nANCIENT GREEK PUNISHMENT:\nINVERSION EDITION",titleStyle);
+      this.cameras.main.setBackgroundColor('#add');
+      let titleStyle = { fontFamily: 'Commodore', fontSize: '38px', fill: '#000', wordWrap: true, align: 'center' };
+      let title = this.add.text(this.game.canvas.width/2,100,"LET'S PLAY:\nANCIENT GREEK PUNISHMENT:\nCOMPETITION EDITION",titleStyle);
       title.setOrigin(0.5);
 
       let items = [
@@ -29,7 +29,7 @@ let Menu = new Phaser.Class({
     },
 
     addMenuItem: function (item,y) {
-      let itemStyle = { fontFamily: 'Commodore', fontSize: '32px', fill: '#aadddd', wordWrap: true };
+      let itemStyle = { fontFamily: 'Commodore', fontSize: '32px', fill: '#000', wordWrap: true };
       let itemText = this.add.text(this.game.canvas.width/2,y,item.text,itemStyle);
       itemText.setOrigin(0.5);
       this.input.keyboard.on('keydown', (e) => {

@@ -1,1 +1,25 @@
-tbd
+# Initial thoughts (Monday, 22 July 2019, 15:55PM)
+
+In a development sense this game seems like it's one of the most simple of all the version (perhaps alongside five-in-one, but perhaps even more simple than that technically?). Really it amounts to a combination of the Inversion Edition with the standard edition, and allowing both sides to be controlled by a player. The game is then two player with the punished character (e.g. Sisyphus) trying to complete their task (push the boulder to the top of the hill) as per every punishment, but now plausibly completable (per inversion edition), and the punisher character (e.g. the boulder) trying to stop them from doing so (and in effect "breaking" the Myth, ala Prince of Persia: The Sands of Time - "that's not how it happened").
+
+As such, I don't think there will be a huge amount of actual development work to be done. It will essentially be the indentical code to Inversion Edition, with the change that instead of a CPU controlling the punished character, I'll return it to being controlled by the other player.
+
+I guess I need to think about where to position instructions. And I need to think about how to make it play nice on mobile. But that's about it in terms of complexities of development.
+
+Meanwhile, I do think that _as a game_ it's a genuinely interesting way of experiencing the myth. In a way this could almost have been the first version altogether if I'd wanted to make it yet more game-y - it becomes that much more like track and field in a way, with two players vying to input the fastest so as to reach the end they desire.
+
+The idea of furious competition in a "sports" style (or WarioWare or similar I suppose) in this context is quite pleasing. Presuming that the players are evenly matched then you have the dynamics of
+
+- They fight each other and thus reach a stasis of furious effort that is nicely representative of the stasis of the various punishments - nothing ever changes despite labour (except for Prometheus I suppose, who doesn't labour per se)
+- One or the other gives up and lets the thing happen to them, leading to unopposed "victory" in one case (for the punished) or just a kind of "being held down and made to say uncle" experience in the other (for the punisher)
+- They both give up and walk away, leading to a kind of static eternity as well not totally different from the first case?
+
+It also occurs to me that the fact that one player can win and the other can't is a nice asymmetry that you would hope/imagine would lead the punisher to keep punishing - they don't want to lose, they have a negative goal.
+
+Having two players and notably having one player punish the other is a dynamic that I think lends a certain frisson to the experience and gets at experiences I've often wanted to explore of "having something done to you you cannot resist" (the shelf game for instance, or really the original Prometheus). Having it be another human sitting beside you has more zest to it than a CPU opponent.
+
+I like the idea that potentially you could get some hand fighting or other meta elements to the game - the punished might break free by pushing aside the punished (the actual player) in order to get sufficient time at the keyboard to reach victory.
+
+In short the various dynamics introduced by having another player that you're in direct conflict with I think intensifies the felt aspect of the punishment and maybe humanises the punisher yet further than the inversion edition where it was more of a joke about punishing a computer with no need or desire to stop etc...
+
+I think there are things to think about. Cogito ergo... cogito or something?
