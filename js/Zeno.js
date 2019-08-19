@@ -5,12 +5,18 @@ let Zeno = new Phaser.Class({
   initialize: function Zeno () {
     Phaser.Scene.call(this, { key: 'zeno' });
 
-    this.FLAG_SPEED = 4;
+    this.FLAG_SPEED = 2;
     this.ZENO_SPEED = 1;
     this.MAX_LEFT = 4*20;
+
+    this.zenoInputSuccess = false;
+    this.flagInputSuccess = false;
+
   },
 
   create: function () {
+    this.HALF_WAY = this.game.canvas.width / 2;
+
     this.cameras.main.setBackgroundColor('#dad');
 
     this.MAX_RIGHT = this.game.canvas.width - 4*20;
@@ -28,9 +34,10 @@ let Zeno = new Phaser.Class({
     this.zeno = this.add.sprite(4*10, this.game.canvas.height/2 + 4*15, 'atlas', 'zeno/zeno/zeno_1.png');
     this.zeno.setScale(4,4);
 
-    let zenoIndicatorString = "< ZENO";
-    let zenoIndicatorStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#000', wordWrap: true, align: 'center' };
-    this.zenoIndicatorText = this.add.text(4*6,240,zenoIndicatorString,zenoIndicatorStyle);
+    let flagIndicatorString = "FLAG >";
+    let flagIndicatorStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    this.flagIndicatorText = this.add.text(this.game.canvas.width - 30*4,240,flagIndicatorString,flagIndicatorStyle);
+    this.flagIndicatorText.visible = false;
 
     this.flag = this.add.sprite(this.game.canvas.width - 4*20, this.game.canvas.height/2 + 4*10, 'atlas', 'zeno/flag.png');
     this.flag.setScale(4,4);
@@ -53,20 +60,55 @@ let Zeno = new Phaser.Class({
     this.createAnimation('victory',4,8,5,0);
 
     // Sisyphus starts off pushing by default
-    this.zeno.anims.play('running');
+    this.zeno.anims.play('idle');
 
     // Add input tracking
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.zenoKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.flagKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
     // Track how many input frames there are (for removing the instructions)
-    this.inputs = 0;
+    this.zenoInputs = 0;
+    this.flagInputs = 0;
 
     // Add instructions
-    let instructionStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#000', wordWrap: true, align: 'center' };
-    let instructionString = "YOU ARE THE FLAG\nUSE ARROW KEYS\nTO MOVE";
-    this.instructionsText = this.add.text(this.game.canvas.width/4,100,instructionString,instructionStyle);
-    this.instructionsText.setOrigin(0.5);
+    let zenoInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let zenoInstructionString = "PLAYER 1 IS ZENO\nRAPIDLY PRESS SPACE\nTO RUN";
+    this.zenoInstructionsText = this.add.text(this.game.canvas.width/4,100,zenoInstructionString,zenoInstructionStyle);
+    this.zenoInstructionsText.setOrigin(0.5);
+
+    let flagInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let flagInstructionString = "PLAYER 2 IS THE FLAG\nRAPIDLY PRESS THE\nRIGHT ARROW\nTO ESCAPE";
+    this.flagInstructionsText = this.add.text(3*this.game.canvas.width/4,100,flagInstructionString,flagInstructionStyle);
+    this.flagInstructionsText.setOrigin(0.5);
 
     this.inputEnabled = true;
+
+    setInterval(() => {
+      if (!this.inputEnabled) {
+        return;
+      }
+
+      if (this.zenoKeyCount > 1) {
+        if (!this.zenoInputSuccess) this.zeno.anims.play('running');
+        this.zenoInputSuccess = true;
+        this.zenoInstructionsText.visible = false;
+      }
+      else {
+        this.zenoInputSuccess = false;
+        this.zeno.anims.play('idle');
+      }
+
+      if (this.flagKeyCount > 1) {
+        this.flagInputSuccess = true;
+        this.flagInstructionsText.visible = false;
+      }
+      else {
+        this.flagInputSuccess = false;
+      }
+
+      this.flagKeyCount = 0;
+      this.zenoKeyCount = 0;
+    },500);
   },
 
   update: function (time,delta) {
@@ -75,6 +117,7 @@ let Zeno = new Phaser.Class({
 
     this.handleInput();
     this.updateZeno();
+    this.updateFlag();
 
     if (this.flag.x <= this.zeno.x + this.zeno.width/2) {
       this.gameIsOver = true;
@@ -91,34 +134,35 @@ let Zeno = new Phaser.Class({
   handleInput: function () {
     if (!this.inputEnabled) return;
 
-    if (this.cursors.left.isDown) {
-      this.inputs++;
-      if (this.flag.x === this.MAX_LEFT) {
-        this.zeno.x += this.FLAG_SPEED;
-        this.dot1.x += this.FLAG_SPEED;
-        this.dot2.x += this.FLAG_SPEED;
+    if (Phaser.Input.Keyboard.JustDown(this.flagKey)) {
+      this.flagKeyCount++;
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.zenoKey)) {
+      this.zenoKeyCount++;
+    }
+
+    if (this.flagInputSuccess) {
+      this.flag.x += this.FLAG_SPEED;
+    }
+
+    if (this.zenoInputSuccess) {
+      this.zenoInputs++;
+      if (this.zeno.x === this.HALF_WAY) {
+        this.dot1.x -= this.ZENO_SPEED;
+        this.dot2.x -= this.ZENO_SPEED;
+        this.flag.x -= this.ZENO_SPEED;
       }
       else {
-        this.flag.x -= this.FLAG_SPEED;
-        if (this.flag.x < this.MAX_LEFT) {
-          this.flag.x = this.MAX_LEFT;
+        this.zeno.x += this.ZENO_SPEED;
+        if (this.zeno.x > this.HALF_WAY) {
+          this.zeno.x = this.HALF_WAY;
         }
       }
     }
-    else if (this.cursors.right.isDown) {
-      this.inputs++;
-      if (this.flag.x === this.MAX_RIGHT) {
-        this.zeno.x -= this.FLAG_SPEED;
-        this.dot1.x -= this.FLAG_SPEED;
-        this.dot2.x -= this.FLAG_SPEED;
-      }
-      else {
-        this.flag.x += this.FLAG_SPEED;
-        if (this.flag.x > this.MAX_RIGHT) {
-          this.flag.x = this.MAX_RIGHT;
-        }
-      }
+    else {
+      this.zeno.anims.play('idle');
     }
+
     if (this.dot1.x < -this.game.canvas.width/2) {
       this.dot1.x += this.game.canvas.width;
     }
@@ -133,21 +177,29 @@ let Zeno = new Phaser.Class({
       this.dot2.x -= this.game.canvas.width;
     }
 
-    if (this.inputs > 120) {
-      this.instructionsText.visible = false;
+    if (this.flagKeyCount > 10) {
+      this.flagInstructionsText.visible = false;
+    }
+
+    if (this.zenoKeyCount > 10) {
+      this.zenoInstructionsText.visible = false;
     }
   },
 
   updateZeno: function () {
-    this.zeno.x += this.ZENO_SPEED;
+    // this.zeno.x += this.ZENO_SPEED;
 
-    if (this.zeno.x <= 0 - this.zeno.width) {
-      this.zenoIndicatorText.visible = true;
-      this.zenoIndicatorText.text = `< ZENO (${Math.floor(Math.abs(this.zeno.x)/40)}m)`
+  },
+
+  updateFlag: function () {
+    if (this.flag.x >= this.game.canvas.width) {
+      this.flagIndicatorText.visible = true;
+      this.flagIndicatorText.text = `FLAG >`
     }
     else {
-      this.zenoIndicatorText.visible = false;
+      this.flagIndicatorText.visible = false;
     }
+
   },
 
   gameOver: function () {
@@ -159,7 +211,7 @@ let Zeno = new Phaser.Class({
     let gameOverBackground = this.add.graphics({ fillStyle: { color: '#000' } });
     gameOverBackground.fillRectShape(screenRect);
     let gameOverStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#aaf', wordWrap: true, align: 'center' };
-    let gameOverString = "YOU LOSE!\n\nZENO FINISHED THE RACE!";
+    let gameOverString = "ZENO FINISHED THE RACE!";
     let gameOverText = this.add.text(this.game.canvas.width/2,this.game.canvas.height/2,gameOverString,gameOverStyle);
     gameOverText.setOrigin(0.5);
 

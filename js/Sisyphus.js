@@ -164,7 +164,7 @@ let Sisyphus = new Phaser.Class({
     let gameOverBackground = this.add.graphics({ fillStyle: { color: '#000' } });
     gameOverBackground.fillRectShape(screenRect);
     let gameOverStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#aaf', wordWrap: true, align: 'center' };
-    let gameOverString = "YOU LOSE!\n\nSISYPHUS REACHED THE TOP OF THE HILL!";
+    let gameOverString = "SISYPHUS REACHED THE TOP OF THE HILL!";
     let gameOverText = this.add.text(this.game.canvas.width/2,this.game.canvas.height/2,gameOverString,gameOverStyle);
     gameOverText.setOrigin(0.5);
 
