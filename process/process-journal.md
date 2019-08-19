@@ -23,3 +23,13 @@ I like the idea that potentially you could get some hand fighting or other meta 
 In short the various dynamics introduced by having another player that you're in direct conflict with I think intensifies the felt aspect of the punishment and maybe humanises the punisher yet further than the inversion edition where it was more of a joke about punishing a computer with no need or desire to stop etc...
 
 I think there are things to think about. Cogito ergo... cogito or something?
+
+---
+
+# Back on that horse (eagle?) (Monday, 19 August 2019, 9:58AM)
+
+So I made the Sisyphus one work (for desktop - must remember mobile) the other day and it was actually fairly satisfying. I wrote somewhere (I suppose the commit) about it being satisfying to make some decisions about the asymmetry of the experience. You read the word "competition" and immediately start thinking about fairness, but the interesting thing about the punishment games _is_ their asymmetry, so the competition edition shouldn't really be any different - it sucks to be the punishee, you'll tend to lose (but then have the "victory" of never losing, finally?). With that in mind all the versions become so much easier. Not to mention that I think every other version excluding Sisyphus is much more reactive anyway? The punished person churns away while the punisher has more discrete activities that sabotage? Well Prometheus is different again...?
+
+Anyway, it's coming along and I'm hopeful the other versions are more straightforwardly about adding controls to Inversion that allow a human to play what was previously the CPU. That's all I wanted to say. I'm here. I see you.
+
+I say "back on the horse" but looking at it I see I didn't even start on the project until the 22nd of July,, which is only... four weeks ago.  And in the interim I released Mobile Chogue with Jonathan (which included a bunch of fiddling) and made and released Chesses, and wrote essays about the Twine and Bitsy Editions and Chesses, so I haven't exactly been idle. And yet it feels like "a while" since I made a game? I suppose it's good I feel that way... the fire still burns etc.
