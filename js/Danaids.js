@@ -5,8 +5,13 @@ let Danaids = new Phaser.Class({
   initialize: function Danaids () {
     Phaser.Scene.call(this, { key: 'danaids' });
 
+    this.MAX_TIME_PER_INPUT = 100;
     this.MAX_FILL_TIME = 2000;
     this.FILL_PER_POUR = 20;
+    this.MIN_KEY_COUNT = 10;
+    this.danaidKeyCount = 0;
+    this.inputEnabled = true;
+    this.currentVX = -1;
   },
 
   create: function () {
@@ -61,7 +66,10 @@ let Danaids = new Phaser.Class({
     this.pouring = false;
     this.filling = false;
     this.inBath = false;
+    this.filled = false;
+    this.toFill = true;
     this.cleanPercentage = 0;
+
 
     this.danaid.on('animationcomplete',function (animation,frame) {
       if (animation.key === 'pour') {
@@ -73,9 +81,12 @@ let Danaids = new Phaser.Class({
           this.danaid.play('put_down_bucket');
         }
         else {
+          this.toFill = true;
           this.danaid.anims.play('running');
           this.danaid.flipX = true;
-          this.danaid.vx = -1;
+          this.currentVX = -1;
+          this.danaid.x -= this.danaid.width;
+          this.inputEnabled = true;
         }
       }
       else if (animation.key === 'put_down_bucket') {
@@ -92,15 +103,25 @@ let Danaids = new Phaser.Class({
         this.danaid.anims.play('running');
         this.danaid.flipX = true;
         this.danaid.vx = -1;
+        this.toFill = true;
+        this.inputEnabled = true;
+      }
+      else if (animation.key === 'raise_bucket') {
+        this.tap.play('tap_filling');
       }
       else if (animation.key === 'lower_bucket') {
         this.danaid.anims.play('running');
         this.danaid.flipX = false;
         this.tap.play('tap_restarting');
-        this.danaid.vx = 1;
+        this.currentVX = 1;
+        this.danaid.vx = this.currentVX;
+        this.filling = false;
+        this.toFill = false;
       }
       else if (animation.key === 'enter_bath') {
         this.inBath = true;
+        this.inputEnabled = true;
+        this.danaidBathInstructionsText.visible = true;
       }
       else if (animation.key === 'exit_bath') {
         this.danaid.x -= 4*5;
@@ -111,7 +132,7 @@ let Danaids = new Phaser.Class({
 
     this.danaid.vx = -1;
     this.danaid.flipX = true;
-    this.danaid.anims.play('running');
+    this.danaid.anims.play('idle');
 
     // Add bath
     this.bath = this.add.sprite(this.game.canvas.width - 4*20, this.game.canvas.height/2 + 4*19, 'atlas', 'danaids/bath/bath_9.png');
@@ -134,7 +155,7 @@ let Danaids = new Phaser.Class({
     this.bath.anims.play('bath_closed');
     this.holesOpen = false;
     this.emptying = false;
-    this.fullPercentage = 0;
+    this.fullPercentage = 80;
     this.currentPourAmount = 0;
     this.fillTime = 0;
     this.BATH_X = this.bath.x - 4*16;
@@ -144,27 +165,50 @@ let Danaids = new Phaser.Class({
     this.ground = this.add.graphics({ fillStyle: { color: 0x000000 } });
     this.ground.fillRectShape(groundRect);
 
-    // Add key control
-    this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    // Add bath and Danaid control
+    this.bathInput = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+    this.danaidInput = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     // Add instructions
-    let instructionStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#000', wordWrap: true, align: 'center' };
-    let instructionString = "YOU ARE THE BATH\nPRESS SPACE\nTO EMPTY";
-    this.instructionsText = this.add.text(3*this.game.canvas.width/4,100,instructionString,instructionStyle);
-    this.instructionsText.setOrigin(0.5);
+    let bathInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let bathInstructionString = "PLAYER 2 IS THE BATH\nPRESS DOWN ARROW\nTO EMPTY";
+    this.bathInstructionsText = this.add.text(3*this.game.canvas.width/4,100,bathInstructionString,bathInstructionStyle);
+    this.bathInstructionsText.setOrigin(0.5);
+
+    let danaidInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let danaidInstructionString = "PLAYER 1 IS THE DANAID\nRAPIDLY PRESS SPACE\nTO FILL YOUR BUCKET\nAND FILL THE BATH";
+    this.danaidInstructionsText = this.add.text(1.1*this.game.canvas.width/4,100,danaidInstructionString,danaidInstructionStyle);
+    this.danaidInstructionsText.setOrigin(0.5);
+
+    let danaidBathInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let danaidBathInstructionString = "PLAYER 1 RAPIDLY PRESS\nSPACE TO CLEAN YOURSELF";
+    this.danaidBathInstructionsText = this.add.text(1.1*this.game.canvas.width/4,100,danaidBathInstructionString,danaidBathInstructionStyle);
+    this.danaidBathInstructionsText.setOrigin(0.5);
+    this.danaidBathInstructionsText.visible = false;
 
     // Add bath percentage information
-    let informationStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#fff', wordWrap: true, align: 'center' };
+    let informationStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#fff', wordWrap: true, align: 'center' };
     let informationString = "BATH FULL: 0%";
     this.informationText = this.add.text(this.game.canvas.width - 350,320,informationString,informationStyle);
     this.informationText.setOrigin(0);
 
     // Add bath percentage information
-    let danaidInformationStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#000', wordWrap: true, align: 'left' };
+    let danaidInformationStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'left' };
     let danaidInformationString = "CLEANLINESS: 0%";
     this.danaidInformationText = this.add.text(this.game.canvas.width - 440,230,danaidInformationString,danaidInformationStyle);
     this.danaidInformationText.setOrigin(0);
     this.danaidInformationText.visible = false;
+
+    setInterval(() => {
+      if (this.danaidKeyCount > 1 && this.inputEnabled) {
+        this.danaidInputSuccess = true;
+        this.danaidInstructionsText.visible = false;
+      }
+      else {
+        this.danaidInputSuccess = false;
+      }
+      this.danaidKeyCount = 0;
+    },500);
 
   },
 
@@ -179,8 +223,8 @@ let Danaids = new Phaser.Class({
   },
 
   handleInput: function () {
-    if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-
+    if (Phaser.Input.Keyboard.JustDown(this.bathInput)) {
+      this.bathInstructionsText.visible = false;
       if (this.emptying || this.pouring) return;
 
       if (this.holesOpen) {
@@ -199,44 +243,77 @@ let Danaids = new Phaser.Class({
         }
       }
     }
+
+    if (Phaser.Input.Keyboard.JustDown(this.danaidInput)) {
+      this.danaidKeyCount++;
+      this.timeSinceLastDanaidInput = 0;
+    }
   },
 
   updateDanaid: function (delta) {
-    this.danaid.x += this.danaid.vx;
 
-    if (this.danaid.anims.currentAnim.key === 'running' && this.danaid.x < this.TAP_X) {
-      this.danaid.vx = 0;
-      this.danaid.x = this.TAP_X;
-      this.danaid.anims.play('raise_bucket');
-      this.tap.play('tap_filling');
-      this.filling = true;
+    let key = this.danaid.anims.currentAnim.key;
+
+    if (this.danaidInputSuccess) {
+      this.danaid.x += this.danaid.vx;
+
+      if (key === 'idle') {
+        this.danaid.vx = this.currentVX;
+        this.danaid.anims.play('running');
+      }
+
+      if (this.toFill && (key === 'running' || key === 'lower_bucket') && this.danaid.x <= this.TAP_X) {
+        this.danaid.vx = 0;
+        this.danaid.x = this.TAP_X;
+        this.danaid.anims.play('raise_bucket');
+        this.filling = true;
+      }
+
+      if (key === 'running' && this.danaid.x > this.BATH_X) {
+        this.danaid.vx = 0;
+        this.danaid.x = this.BATH_X;
+        this.danaid.anims.play('pour');
+        this.inputEnabled = false;
+      }
+
+      if (this.filling) {
+        this.fillTime += delta;
+        if (this.fillTime > this.MAX_FILL_TIME) {
+          this.danaid.anims.play('lower_bucket');
+          this.filling = false;
+          this.toFill = false;
+          this.filled = true;
+          this.fillTime = 0;
+        }
+      }
     }
-
-    if (this.danaid.anims.currentAnim.key === 'running' && this.danaid.x > this.BATH_X) {
+    else {
       this.danaid.vx = 0;
-      this.danaid.x = this.BATH_X;
-      this.danaid.anims.play('pour');
-    }
-
-    if (this.filling) {
-      this.fillTime += delta;
-      if (this.fillTime > this.MAX_FILL_TIME) {
+      if (key === 'running') {
+        this.danaid.anims.play('idle');
+      }
+      else if (this.filling) {
         this.danaid.anims.play('lower_bucket');
+        this.tap.anims.play('tap_restarting');
         this.filling = false;
-        this.fillTime = 0;
       }
     }
 
     if (this.inBath) {
       if (this.fullPercentage === 0) {
         this.danaid.anims.play('exit_bath');
+        this.danaidBathInstructionsText.visible = true;
         this.cleanPercentage = 0;
         this.danaidInformationText.visible = false;
         this.inBath = false;
       }
       else if (this.fullPercentage === 100) {
         this.danaidInformationText.visible = true;
-        this.cleanPercentage += 0.25;
+        console.log("In bath with fullPrercentage at 100")
+        if (this.danaidInputSuccess) {
+          console.log("Input success to fill bath")
+          this.cleanPercentage += 0.25;
+        }
         if (this.cleanPercentage >= 100) {
           this.cleanPercentage = 100;
           this.gameIsOver = true;
@@ -271,7 +348,7 @@ let Danaids = new Phaser.Class({
       }
     }
     else if (this.holesOpen && this.fullPercentage > 0) {
-      this.instructionsText.visible = false;
+      this.bathInstructionsText.visible = false;
       this.emptying = true;
       this.bath.anims.play('bath_emptying');
       this.emptySFX.play();
@@ -289,7 +366,7 @@ let Danaids = new Phaser.Class({
     let gameOverBackground = this.add.graphics({ fillStyle: { color: '#000' } });
     gameOverBackground.fillRectShape(screenRect);
     let gameOverStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#dda', wordWrap: true, align: 'center' };
-    let gameOverString = "YOU LOSE!\n\nTHE DANAID GOT CLEAN!";
+    let gameOverString = "THE DANAID GOT CLEAN!";
     let gameOverText = this.add.text(this.game.canvas.width/2,this.game.canvas.height/2,gameOverString,gameOverStyle);
     gameOverText.setOrigin(0.5);
 
