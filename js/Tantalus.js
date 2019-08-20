@@ -10,6 +10,10 @@ let Tantalus = new Phaser.Class({
     this.ACTION_MIN_PERFORM = 1000;
     this.ACTION_PERFORM_RANGE = 2000;
 
+    this.inputEnabled = true;
+    this.appleSuccess = false;
+    this.waterSuccess = false;
+
   },
 
   create: function () {
@@ -41,25 +45,23 @@ let Tantalus = new Phaser.Class({
 
     this.createAnimation('reach','tantalus/reaching/reaching',1,5,5,0);
     this.createAnimation('unreach','tantalus/reaching/reaching',5,1,5,0);
-    this.createAnimation('eating_fail','tantalus/eating_fail/eating_fail',1,2,5,6);
+    this.createAnimation('eating_fail','tantalus/eating_fail/eating_fail',1,2,10,1);
     this.createAnimation('eating','tantalus/eating/eating',1,18,5,0);
 
     this.createAnimation('stoop','tantalus/stooping/stooping',1,3,5,0);
     this.createAnimation('unstoop','tantalus/stooping/stooping',3,1,5,0);
     this.createAnimation('undrinking_fail','tantalus/drinking_fail/drinking_fail',0,1,5,0);
-    this.createAnimation('drinking_fail','tantalus/drinking_fail/drinking_fail',1,3,5,0);
+    this.createAnimation('drinking_fail','tantalus/drinking_fail/drinking_fail',3,4,5,1);
     this.createAnimation('drinking','tantalus/drinking/drinking',1,2,5,6);
 
     this.tantalus.anims.play('tantalus_idle');
-
-    this.delayAction();
 
     // - Animation complete events
     this.tantalus.on('animationcomplete',function (animation,frame) {
 
       switch(animation.key) {
         case 'reach':
-        if (this.branchUp || this.branchRaising) {
+        if (!this.branchDown) {
           this.tantalus.anims.play('eating_fail');
         }
         else {
@@ -68,16 +70,21 @@ let Tantalus = new Phaser.Class({
         break;
 
         case 'eating_fail':
-        this.tantalus.anims.play('unreach');
+        console.log(this.reachSuccess)
+        if (!this.reachSuccess) {
+          this.tantalus.anims.play('unreach');
+        }
+        else {
+          this.tantalus.anims.play('eating_fail');
+        }
         break;
 
         case 'unreach':
         this.tantalus.anims.play('tantalus_idle');
-        this.delayAction();
         break;
 
         case 'stoop':
-        if (this.waterDown || this.waterLowering) {
+        if (!this.waterUp) {
           this.tantalus.anims.play('drinking_fail');
           this.tantalus.x += 1*8;
           this.tantalus.y -= 3*8;
@@ -88,7 +95,12 @@ let Tantalus = new Phaser.Class({
         break;
 
         case 'drinking_fail':
-        this.tantalus.anims.play('undrinking_fail');
+        if (!this.stoopSuccess) {
+          this.tantalus.anims.play('undrinking_fail');
+        }
+        else {
+          this.tantalus.anims.play('drinking_fail');
+        }
         break;
 
         case 'undrinking_fail':
@@ -101,7 +113,6 @@ let Tantalus = new Phaser.Class({
         this.tantalus.anims.play('tantalus_idle');
         this.tantalus.x += 8*1;
         this.tantalus.y -= 8*3;
-        this.delayAction();
         break;
 
         case 'eating':
@@ -110,6 +121,10 @@ let Tantalus = new Phaser.Class({
 
         case 'drinking':
         this.gameOver("TANTALUS DRANK SOME WATER!");
+        break;
+
+        case 'tantalus_idle':
+        // No need to do anything
         break;
 
         default:
@@ -192,59 +207,117 @@ let Tantalus = new Phaser.Class({
 
     // Input
 
+    this.reachKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.stoopKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
     this.branchKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.waterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
     // Instructions
 
+    // - Reach
+    let reachInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
+    let reachInstructionString = "PLAYER 1 RAPIDLY PRESS W\nTO EAT THE APPLE";
+    this.reachInstructionsText = this.add.text(3*this.game.canvas.width/4,100,reachInstructionString,reachInstructionStyle);
+    this.reachInstructionsText.setOrigin(0.5);
+
+    // - Stoop
+    let stoopInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#fff', wordWrap: true, align: 'center' };
+    let stoopInstructionString = "PLAYER 1 RAPIDLY PRESS S\nTO DRINK THE WATER";
+    this.stoopInstructionsText = this.add.text(400,360,stoopInstructionString,stoopInstructionStyle);
+    this.stoopInstructionsText.setOrigin(0.5);
+
     // - Branch
-    let appleInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
-    let appleInstructionString = "YOU ARE THE APPLE\nHOLD UP ARROW TO\nLIFT YOUR BRANCH";
-    this.appleInstructionsText = this.add.text(3*this.game.canvas.width/4,100,appleInstructionString,appleInstructionStyle);
-    this.appleInstructionsText.setOrigin(0.5);
+    let branchInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
+    let branchInstructionString = "PLAYER 2\nHOLD UP ARROW TO\nLIFT THE BRANCH";
+    this.branchInstructionsText = this.add.text(3*this.game.canvas.width/4,100,branchInstructionString,branchInstructionStyle);
+    this.branchInstructionsText.setOrigin(0.5);
 
     // - Water
     let waterInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#fff', wordWrap: true, align: 'center' };
-    let waterInstructionString = "YOU ARE THE WATER\nHOLD DOWN ARROW TO\nLOWER YOUR LEVEL";
+    let waterInstructionString = "PLAYER 2\nHOLD DOWN ARROW TO\nLOWER THE WATER";
     this.waterInstructionsText = this.add.text(400,360,waterInstructionString,waterInstructionStyle);
     this.waterInstructionsText.setOrigin(0.5);
 
-  },
-
-  delayAction: function () {
-    setTimeout(() => {
-      if (this.gameIsOver) return;
-
-      if (Math.random() < 0.5 && this.waterUp) {
-        this.stoop();
+    // Interval for input checks
+    setInterval(() => {
+      if (this.reachInputs > 1 && this.inputEnabled) {
+        this.reachSuccess = true;
+        this.reachInstructionsText.visible = false;
+        this.stoopSuccess = false;
       }
-      else if (this.branchDown){
-        this.reach();
+      else if (this.stoopInputs > 1 && this.inputEnabled) {
+        this.stoopSuccess = true;
+        this.stoopInstructionsText.visible = false;
+        this.reachSuccess = false;
       }
       else {
-        this.delayAction();
+        this.reachSuccess = false;
+        this.stoopSuccess = false;
       }
-    },this.ACTION_MIN_DELAY + Math.random() * this.ACTION_DELAY_RANGE);
+      this.reachInputs = 0;
+      this.stoopInputs = 0;
+    },500);
   },
 
   update: function (time,delta) {
 
+    console.log(this.tantalus.anims.currentAnim.key);
+
     if (this.gameIsOver) return;
 
     this.handleInput();
+    this.updateTantalus();
+  },
+
+  updateTantalus: function () {
+    if (this.reachSuccess) {
+      this.reach();
+    }
+    else {
+      this.unreach();
+    }
+
+    if (this.stoopSuccess) {
+      this.stoop();
+    }
+    else {
+      this.unstoop();
+    }
   },
 
   stoop: function () {
-    this.tantalus.x -= 1*8;
-    this.tantalus.y += 3*8;
-    this.tantalus.anims.play('stoop');
+    let key = this.tantalus.anims.currentAnim.key
+    if (key ==='tantalus_idle') {
+      this.tantalus.x -= 1*8;
+      this.tantalus.y += 3*8;
+      this.tantalus.anims.play('stoop');
+    }
+  },
+
+  unstoop: function () {
+    // let key = this.tantalus.anims.currentAnim.key
+    // if (key  === 'drinking_fail') {
+    //   this.tantalus.anims.play('unstoop');
+    // }
   },
 
   reach: function () {
-    this.tantalus.anims.play('reach');
+    let key = this.tantalus.anims.currentAnim.key
+    if (key ==='tantalus_idle') {
+      this.tantalus.anims.play('reach');
+    }
+  },
+
+  unreach: function () {
+    // let key = this.tantalus.anims.currentAnim.key
+    // if (key  === 'eating_fail') {
+    //   this.tantalus.anims.play('unreach');
+    // }
   },
 
   eat: function  () {
+    this.inputEnabled = false;
     this.victorySFX.play();
     this.tantalus.x -= 1*8;
     this.tantalus.y += 3*8;
@@ -262,8 +335,14 @@ let Tantalus = new Phaser.Class({
   },
 
   handleInput: function () {
+    if (!this.inputEnabled) return;
 
-    console.log("input")
+    if (Phaser.Input.Keyboard.JustDown(this.reachKey)) {
+      this.reachInputs++;
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.stoopKey)) {
+      this.stoopInputs++;
+    }
 
     if (!this.branchRaising && !this.branchLowering && !this.eating) {
       if (this.branchKey.isDown && this.branchDown) {
@@ -276,7 +355,7 @@ let Tantalus = new Phaser.Class({
         this.branchUp = false;
         this.branchLowering = true;
         this.branch.anims.play('branch_lower');
-        this.appleInstructionsText.visible = false;
+        this.branchInstructionsText.visible = false;
       }
     }
 
@@ -305,7 +384,7 @@ let Tantalus = new Phaser.Class({
     let gameOverBackground = this.add.graphics({ fillStyle: { color: '#000' } });
     gameOverBackground.fillRectShape(screenRect);
     let gameOverStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#dda', wordWrap: true, align: 'center' };
-    let gameOverString = "YOU LOSE!\n\n" + text;
+    let gameOverString = "" + text;
     let gameOverText = this.add.text(this.game.canvas.width/2,this.game.canvas.height/2,gameOverString,gameOverStyle);
     gameOverText.setOrigin(0.5);
 
