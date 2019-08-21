@@ -33,3 +33,31 @@ So I made the Sisyphus one work (for desktop - must remember mobile) the other d
 Anyway, it's coming along and I'm hopeful the other versions are more straightforwardly about adding controls to Inversion that allow a human to play what was previously the CPU. That's all I wanted to say. I'm here. I see you.
 
 I say "back on the horse" but looking at it I see I didn't even start on the project until the 22nd of July,, which is only... four weeks ago.  And in the interim I released Mobile Chogue with Jonathan (which included a bunch of fiddling) and made and released Chesses, and wrote essays about the Twine and Bitsy Editions and Chesses, so I haven't exactly been idle. And yet it feels like "a while" since I made a game? I suppose it's good I feel that way... the fire still burns etc.
+
+---
+
+# Mobile friendly? (Wednesday, 21 August 2019, 11:28AM)
+
+A pause to think about the issue of whether this game can work well on mobile.
+
+I really like the idea that it would. Primarily it's just that people use mobile devices a lot and if my game isn't working on mobile then that's a bunch of people who wouldn't be exposed to it (and yes, I know not many play these more fringe games and that's okay). More than that, though, there's a clear win to having two people hunched over a single phone/tablet fighting it out - there's something both dystopian (of course) but also oddly community-making about the activity that adds to the strangeness of it. You get that on a computer too, but maybe not as much?
+
+The issue is in the levels with more complex controls (notably for the punisher). So we have
+
+- Sisyphus: fine, I think. People can tap on opposing sides of the screen roughly associated with the correct figure.
+- Danaids: fine, I think. The Danaid can tap on most of the screen, the bath tormentor can touch the bath to empty it.
+- Zeno: fine now that it's exertion based, same as Sisyphus with a split screen.
+- Tantalus: this gets hard because there are four distinct inputs in two styles - tapping and touch-and-hold. You can of course break the screen into quadrants, and that would work. Maybe that's okay? Literally "tap repeatedly here to reach" "touch and hold here to raise the branch"? It's basically just buttons at that point though - shoulder there just be literal buttons on the screen? Maybe that's not terrible?
+- Prometheus: the problematic one. Prometheus himself is fine, it's the damn eagle. It can fly around and it can peck. The most obvious solution is to have the eagle fly in a line to where you tap and land if it hits the rock, then tapping prometheus would peck and tapping elsewhere would take off. It seems relatively okay, but interestingly wouldn't work with the buttons approach.
+
+Swipes are another potential form of input, but they don't really work well I think because they tend to interact with the browser UI in undesirable ways (like scrolling or bringing up menus etc.)
+
+So the "buttons" version is nice for Sisyphus, Danaids, Zeno, Tantalus, but not Prometheus. The instructions-and-zones version is solid for Prometheus, etc., but maybe not Tantalus which is overly complex.
+
+Or do you do a mixed version and throw consistency to the wind?
+
+Or do you simply not make it mobile friendly?
+
+Another option on mobile for Prometheus would be to have buttons that you tap or hold to "fly to Prometheus" and then "peck" which enabled and disable as they become contextually relevant? Maybe that's a doable compromise? I do quite enjoy the though of the stupid buttons? Or are they stupid?
+
+HMMMMM.
