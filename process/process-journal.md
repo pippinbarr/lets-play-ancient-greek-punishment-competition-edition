@@ -61,3 +61,11 @@ Or do you simply not make it mobile friendly?
 Another option on mobile for Prometheus would be to have buttons that you tap or hold to "fly to Prometheus" and then "peck" which enabled and disable as they become contextually relevant? Maybe that's a doable compromise? I do quite enjoy the though of the stupid buttons? Or are they stupid?
 
 HMMMMM.
+
+---
+
+# Mobile? More like no-bile (Wednesday, 21 August 2019, 13:05PM)
+
+Sat down and thought about it and... I guess I don't think I can be bothered with the design challenge of making this mobile-friendly. It's not going to be a big game with a million players and that's never been the point of it. I think I'm comfortable with it being a side-by-side game people play at the computer, just like the original was. That would allow me to just move on with life and make something else, like the Artist is Present 2...
+
+So maybe we're done here. I'll need to do a final pass to make sure everything definitely works and to make sure the instructions aren't gross in particular, but basically we're done.
