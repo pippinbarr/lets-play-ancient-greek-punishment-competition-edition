@@ -379,6 +379,8 @@ let Danaids = new Phaser.Class({
   //
   // Helper function to generate the frames and animation for Sisyphus between set limits
   createAnimation: function (name,path,start,end,framerate,repeat) {
+    if (this.anims.get(name) !== undefined) return;
+
     let frames = this.anims.generateFrameNames('atlas', {
       start: start, end: end, zeroPad: 0,
       prefix: path + '_', suffix: '.png'
