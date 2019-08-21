@@ -6,6 +6,7 @@ let Prometheus = new Phaser.Class({
     Phaser.Scene.call(this, { key: 'prometheus' });
 
     this.EAGLE_FLY_SPEED = 70;
+    this.inputEnabled = true;
   },
 
   create: function () {
@@ -28,9 +29,11 @@ let Prometheus = new Phaser.Class({
 
     this.prometheus = this.add.sprite(this.game.canvas.width/2,this.game.canvas.height/2 + 4*10,'atlas','prometheus/prometheus/prometheus_1.png').setScale(4);
 
-    this.createAnimation('prometheus_struggle','prometheus/prometheus/prometheus',2,3,5,0);
+    this.createAnimation('prometheus_idle','prometheus/prometheus/prometheus',3,3,5,0);
+    this.createAnimation('prometheus_struggle','prometheus/prometheus/prometheus',2,3,3,-1);
 
-    // this.prometheus.anims.play('prometheus_struggle');
+    this.prometheus.anims.play('prometheus_idle');
+    this.struggling = false;
 
     // Rock
 
@@ -70,21 +73,27 @@ let Prometheus = new Phaser.Class({
     // Input
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.prometheusInput = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
     this.inputEnabled = false;
 
     // Instructions
 
-    let flyInstructionStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#000', wordWrap: true, align: 'center' };
-    let flyInstructionString = "YOU ARE THE EAGLE\nUSE ARROW KEYS\nTO FLY AND LAND\nON PROMETHEUS'S BODY";
-    this.flyInstructionsText = this.add.text(this.game.canvas.width/2,100,flyInstructionString,flyInstructionStyle);
+    let flyInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let flyInstructionString = "PLAYER 2 IS THE EAGLE\nUSE ARROW KEYS\nTO FLY AND LAND\nON PROMETHEUS'S BODY";
+    this.flyInstructionsText = this.add.text(this.game.canvas.width/2,60,flyInstructionString,flyInstructionStyle);
     this.flyInstructionsText.setOrigin(0.5);
 
-    let peckInstructionStyle = { fontFamily: 'Commodore', fontSize: '24px', fill: '#000', wordWrap: true, align: 'center' };
-    let peckInstructionString = "USE SPACEBAR TO\nPECK OUT\nPROMETHEUS'S\nLIVER";
-    this.peckInstructionsText = this.add.text(400,100,peckInstructionString,peckInstructionStyle);
+    let peckInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let peckInstructionString = "PLAYER 2\nUSE SPACE KEY TO\nPECK OUT\nPROMETHEUS'S\nLIVER";
+    this.peckInstructionsText = this.add.text(400,60,peckInstructionString,peckInstructionStyle);
     this.peckInstructionsText.setOrigin(0.5);
     this.peckInstructionsText.visible = false;
+
+    let prometheusInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let prometheusInstructionString = "PLAYER 1 IS PROMETHEUS\nRAPIDLY PRESS S TO\nSTRUGGLE AND DISLODGE THE EAGLE";
+    this.prometheusInstructionsText = this.add.text(this.game.canvas.width/2,180,prometheusInstructionString,prometheusInstructionStyle);
+    this.prometheusInstructionsText.setOrigin(0.5);
 
 
     // Stats
@@ -115,6 +124,18 @@ let Prometheus = new Phaser.Class({
 
     // Tween in the eagle
     this.arrive();
+
+    this.timeSinceLastPrometheusInput = 1000000;
+    setInterval(() => {
+      if (this.prometheusKeyCount > 1 && this.inputEnabled) {
+        this.prometheusInputSuccess = true;
+        this.prometheusInstructionsText.visible = false;
+      }
+      else {
+        this.prometheusInputSuccess = false;
+      }
+      this.prometheusKeyCount = 0;
+    },500);
   },
 
   update: function (time,delta) {
@@ -209,6 +230,11 @@ let Prometheus = new Phaser.Class({
 
     if (!this.inputEnabled) return;
 
+    if (Phaser.Input.Keyboard.JustDown(this.prometheusInput)) {
+      this.prometheusKeyCount++;
+      this.timeSinceLastPrometheusInput = 0;
+    }
+
     if (this.currentPerch !== null) {
       if (this.cursors.up.isDown) {
         this.hover();
@@ -244,9 +270,20 @@ let Prometheus = new Phaser.Class({
   },
 
   updatePrometheus: function () {
-    if (this.inputEnabled && this.currentPerch != null && this.currentPerch.peck && Math.random() < 0.01 && this.liver > 0) {
+    let anim = this.prometheus.anims.currentAnim;
+    console.log(anim.key,anim.finished)
+    if (!this.struggling && this.inputEnabled && this.prometheusInputSuccess && this.liver > 0) {
       this.prometheus.anims.play('prometheus_struggle');
-      this.hover();
+      this.struggling = true;
+    }
+    if (!this.prometheusInputSuccess) {
+      this.prometheus.anims.play('prometheus_idle');
+      this.struggling = false;
+    }
+    if (this.struggling) {
+      if (this.currentPerch != null && this.currentPerch.peck) {
+        this.hover();
+      }
     }
   },
 
