@@ -207,8 +207,8 @@ let Tantalus = new Phaser.Class({
 
     // Input
 
-    this.reachKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-    this.stoopKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this.reachKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.stoopKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
     this.branchKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.waterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -216,27 +216,27 @@ let Tantalus = new Phaser.Class({
     // Instructions
 
     // - Reach
-    let reachInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
-    let reachInstructionString = "PLAYER 1 RAPIDLY PRESS W\nTO EAT THE APPLE";
-    this.reachInstructionsText = this.add.text(3*this.game.canvas.width/4,100,reachInstructionString,reachInstructionStyle);
+    let reachInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let reachInstructionString = "PLAYER 1\nRAPIDLY PRESS A\nTO EAT THE APPLE";
+    this.reachInstructionsText = this.add.text(1*this.game.canvas.width/4,100,reachInstructionString,reachInstructionStyle);
     this.reachInstructionsText.setOrigin(0.5);
 
     // - Stoop
-    let stoopInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#fff', wordWrap: true, align: 'center' };
-    let stoopInstructionString = "PLAYER 1 RAPIDLY PRESS S\nTO DRINK THE WATER";
-    this.stoopInstructionsText = this.add.text(400,360,stoopInstructionString,stoopInstructionStyle);
+    let stoopInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#fff', wordWrap: true, align: 'center' };
+    let stoopInstructionString = "PLAYER 1\nRAPIDLY PRESS W\nTO DRINK\nTHE WATER";
+    this.stoopInstructionsText = this.add.text(1*this.game.canvas.width/7,300,stoopInstructionString,stoopInstructionStyle);
     this.stoopInstructionsText.setOrigin(0.5);
 
     // - Branch
-    let branchInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
+    let branchInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
     let branchInstructionString = "PLAYER 2\nHOLD UP ARROW TO\nLIFT THE BRANCH";
     this.branchInstructionsText = this.add.text(3*this.game.canvas.width/4,100,branchInstructionString,branchInstructionStyle);
     this.branchInstructionsText.setOrigin(0.5);
 
     // - Water
-    let waterInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#fff', wordWrap: true, align: 'center' };
-    let waterInstructionString = "PLAYER 2\nHOLD DOWN ARROW TO\nLOWER THE WATER";
-    this.waterInstructionsText = this.add.text(400,360,waterInstructionString,waterInstructionStyle);
+    let waterInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#fff', wordWrap: true, align: 'center' };
+    let waterInstructionString = "PLAYER 2\nHOLD DOWN ARROW\nTO LOWER\nTHE WATER";
+    this.waterInstructionsText = this.add.text(6*this.game.canvas.width/7,300,waterInstructionString,waterInstructionStyle);
     this.waterInstructionsText.setOrigin(0.5);
 
     // Interval for input checks

@@ -79,20 +79,20 @@ let Prometheus = new Phaser.Class({
 
     // Instructions
 
-    let flyInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let flyInstructionString = "PLAYER 2 IS THE EAGLE\nUSE ARROW KEYS\nTO FLY AND LAND\nON PROMETHEUS'S BODY";
-    this.flyInstructionsText = this.add.text(this.game.canvas.width/2,60,flyInstructionString,flyInstructionStyle);
+    let flyInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let flyInstructionString = "PLAYER 2\nUSE ARROW KEYS\nTO FLY AND LAND\nON PROMETHEUS'S BODY";
+    this.flyInstructionsText = this.add.text(this.game.canvas.width/4,60,flyInstructionString,flyInstructionStyle);
     this.flyInstructionsText.setOrigin(0.5);
 
-    let peckInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
+    let peckInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
     let peckInstructionString = "PLAYER 2\nUSE SPACE KEY TO\nPECK OUT\nPROMETHEUS'S\nLIVER";
-    this.peckInstructionsText = this.add.text(400,60,peckInstructionString,peckInstructionStyle);
+    this.peckInstructionsText = this.add.text(this.game.canvas.width/2,150,peckInstructionString,peckInstructionStyle);
     this.peckInstructionsText.setOrigin(0.5);
     this.peckInstructionsText.visible = false;
 
-    let prometheusInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let prometheusInstructionString = "PLAYER 1 IS PROMETHEUS\nRAPIDLY PRESS S TO\nSTRUGGLE AND DISLODGE THE EAGLE";
-    this.prometheusInstructionsText = this.add.text(this.game.canvas.width/2,180,prometheusInstructionString,prometheusInstructionStyle);
+    let prometheusInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let prometheusInstructionString = "PLAYER 1\nRAPIDLY PRESS S\nTO STRUGGLE AND\nDISLODGE THE EAGLE";
+    this.prometheusInstructionsText = this.add.text(3*this.game.canvas.width/4,60,prometheusInstructionString,prometheusInstructionStyle);
     this.prometheusInstructionsText.setOrigin(0.5);
 
 
@@ -289,6 +289,7 @@ let Prometheus = new Phaser.Class({
 
   hover: function () {
     console.log("hover");
+    this.peckInstructionsText.visible = false;
     this.eagle.anims.play('eagle_flying');
     this.currentPerch = null;
     this.inputEnabled = false;
@@ -315,8 +316,8 @@ let Prometheus = new Phaser.Class({
 
     let eagleTweenIn = this.tweens.add({
       targets: this.eagle,
-      x: 100,
-      y: 100,
+      x: 180,
+      y: 150,
       duration: 1500,
       repeat: 0,
       onComplete: () => {
@@ -330,7 +331,7 @@ let Prometheus = new Phaser.Class({
   peck: function () {
     if (this.peckInstructionsText.visible) {
       setTimeout(() => {
-        this.peckInstructionsText.visible = false;
+        this.peckInstructionsText.alpha = 0;
       },500);
     }
 
@@ -412,7 +413,7 @@ let Prometheus = new Phaser.Class({
   },
 
   perch: function (eagle, perch) {
-    if (this.flyInstructionsText.visible && perch.peck) {
+    if (perch.peck) {
       this.flyInstructionsText.visible = false;
       setTimeout(() => {
         this.peckInstructionsText.visible = true;

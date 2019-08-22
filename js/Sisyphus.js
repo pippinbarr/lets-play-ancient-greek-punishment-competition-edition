@@ -57,14 +57,14 @@ let Sisyphus = new Phaser.Class({
     this.rockKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
     // Add instructions
-    let sisyphusInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
-    let sisyphusInstructionString = "PLAYER 1 IS SISYPHUS\nRAPIDLY PRESS RIGHT ARROW\nTO PUSH THE ROCK UPHILL";
-    this.sisyphusInstructionsText = this.add.text(this.game.canvas.width/3,80,sisyphusInstructionString,sisyphusInstructionStyle);
+    let sisyphusInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let sisyphusInstructionString = "PLAYER 1\nRAPIDLY PRESS\nRIGHT ARROW\nTO PUSH THE\nROCK UPHILL";
+    this.sisyphusInstructionsText = this.add.text(1.5*this.game.canvas.width/5,150,sisyphusInstructionString,sisyphusInstructionStyle);
     this.sisyphusInstructionsText.setOrigin(0.5);
 
-    let rockInstructionStyle = { fontFamily: 'Commodore', fontSize: '20px', fill: '#000', wordWrap: true, align: 'center' };
-    let rockInstructionString = "PLAYER 2 IS THE ROCK\nRAPIDLY PRESS LEFT ARROW\nTO PUSH SISYPHUS DOWNHILL";
-    this.rockInstructionsText = this.add.text(this.game.canvas.width/3,180,rockInstructionString,rockInstructionStyle);
+    let rockInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let rockInstructionString = "PLAYER 2\nRAPIDLY PRESS\nLEFT ARROW\nTO PUSH\nSISYPHUS\nDOWNHILL";
+    this.rockInstructionsText = this.add.text(2.8*this.game.canvas.width/5,150,rockInstructionString,rockInstructionStyle);
     this.rockInstructionsText.setOrigin(0.5);
   },
 
@@ -178,7 +178,7 @@ let Sisyphus = new Phaser.Class({
   // Helper function to generate the frames and animation for Sisyphus between set limits
   createAnimation: function (name,start,end) {
     if (this.anims.get(name) !== undefined) return;
-    
+
     let frames = this.anims.generateFrameNames('atlas', {
       start: start, end: end, zeroPad: 0,
       prefix: 'sisyphus/sisyphus/sisyphus_', suffix: '.png'

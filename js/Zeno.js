@@ -71,14 +71,14 @@ let Zeno = new Phaser.Class({
     this.flagInputs = 0;
 
     // Add instructions
-    let zenoInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let zenoInstructionString = "PLAYER 1 IS ZENO\nRAPIDLY PRESS SPACE\nTO RUN";
-    this.zenoInstructionsText = this.add.text(this.game.canvas.width/4,100,zenoInstructionString,zenoInstructionStyle);
+    let zenoInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let zenoInstructionString = "PLAYER 1\nRAPIDLY PRESS\nSPACE TO RUN";
+    this.zenoInstructionsText = this.add.text(0.6*this.game.canvas.width/4,160,zenoInstructionString,zenoInstructionStyle);
     this.zenoInstructionsText.setOrigin(0.5);
 
-    let flagInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let flagInstructionString = "PLAYER 2 IS THE FLAG\nRAPIDLY PRESS THE\nRIGHT ARROW\nTO ESCAPE";
-    this.flagInstructionsText = this.add.text(3*this.game.canvas.width/4,100,flagInstructionString,flagInstructionStyle);
+    let flagInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let flagInstructionString = "PLAYER 2\nRAPIDLY PRESS THE\nRIGHT ARROW\nTO MOVE THE FLAG";
+    this.flagInstructionsText = this.add.text(3.2*this.game.canvas.width/4,100,flagInstructionString,flagInstructionStyle);
     this.flagInstructionsText.setOrigin(0.5);
 
     this.inputEnabled = true;

@@ -102,7 +102,9 @@ let Danaids = new Phaser.Class({
       else if (animation.key === 'pick_up_bucket') {
         this.danaid.anims.play('running');
         this.danaid.flipX = true;
-        this.danaid.vx = -1;
+        this.currentVX = -1;
+        this.danaid.vx = this.currentVX;
+        this.danaid.x -= this.danaid.width;
         this.toFill = true;
         this.inputEnabled = true;
       }
@@ -115,13 +117,14 @@ let Danaids = new Phaser.Class({
         this.tap.play('tap_restarting');
         this.currentVX = 1;
         this.danaid.vx = this.currentVX;
+        this.danaid.x += this.danaid.width;
         this.filling = false;
         this.toFill = false;
       }
       else if (animation.key === 'enter_bath') {
         this.inBath = true;
         this.inputEnabled = true;
-        this.danaidBathInstructionsText.visible = true;
+        // this.danaidBathInstructionsText.visible = true;
       }
       else if (animation.key === 'exit_bath') {
         this.danaid.x -= 4*5;
@@ -170,19 +173,19 @@ let Danaids = new Phaser.Class({
     this.danaidInput = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     // Add instructions
-    let bathInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let bathInstructionString = "PLAYER 2 IS THE BATH\nPRESS DOWN ARROW\nTO EMPTY";
-    this.bathInstructionsText = this.add.text(3*this.game.canvas.width/4,100,bathInstructionString,bathInstructionStyle);
+    let bathInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let bathInstructionString = "PLAYER 2\nPRESS DOWN ARROW\nTO EMPTY THE BATH";
+    this.bathInstructionsText = this.add.text(4*this.game.canvas.width/5,160,bathInstructionString,bathInstructionStyle);
     this.bathInstructionsText.setOrigin(0.5);
 
-    let danaidInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let danaidInstructionString = "PLAYER 1 IS THE DANAID\nRAPIDLY PRESS SPACE\nTO FILL YOUR BUCKET\nAND FILL THE BATH";
-    this.danaidInstructionsText = this.add.text(1.1*this.game.canvas.width/4,100,danaidInstructionString,danaidInstructionStyle);
+    let danaidInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let danaidInstructionString = "PLAYER 1\nRAPIDLY PRESS SPACE\nTO FILL YOUR BUCKET\nFILL THE BATH\nAND GET CLEAN";
+    this.danaidInstructionsText = this.add.text(1*this.game.canvas.width/5,140,danaidInstructionString,danaidInstructionStyle);
     this.danaidInstructionsText.setOrigin(0.5);
 
-    let danaidBathInstructionStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'center' };
-    let danaidBathInstructionString = "PLAYER 1 RAPIDLY PRESS\nSPACE TO CLEAN YOURSELF";
-    this.danaidBathInstructionsText = this.add.text(1.1*this.game.canvas.width/4,100,danaidBathInstructionString,danaidBathInstructionStyle);
+    let danaidBathInstructionStyle = { fontFamily: 'Commodore', fontSize: '18px', fill: '#000', wordWrap: true, align: 'center' };
+    let danaidBathInstructionString = "PLAYER 1\nRAPIDLY PRESS\nSPACE TO CLEAN YOURSELF";
+    this.danaidBathInstructionsText = this.add.text(2.5*this.game.canvas.width/4,180,danaidBathInstructionString,danaidBathInstructionStyle);
     this.danaidBathInstructionsText.setOrigin(0.5);
     this.danaidBathInstructionsText.visible = false;
 
@@ -195,7 +198,7 @@ let Danaids = new Phaser.Class({
     // Add bath percentage information
     let danaidInformationStyle = { fontFamily: 'Commodore', fontSize: '22px', fill: '#000', wordWrap: true, align: 'left' };
     let danaidInformationString = "CLEANLINESS: 0%";
-    this.danaidInformationText = this.add.text(this.game.canvas.width - 440,230,danaidInformationString,danaidInformationStyle);
+    this.danaidInformationText = this.add.text(this.game.canvas.width - 400,230,danaidInformationString,danaidInformationStyle);
     this.danaidInformationText.setOrigin(0);
     this.danaidInformationText.visible = false;
 
@@ -215,6 +218,8 @@ let Danaids = new Phaser.Class({
   update: function (time,delta) {
 
     if (this.gameIsOver) return;
+
+    // console.log(this.danaid.anims.currentAnim.key);
 
     this.handleInput();
     this.updateDanaid(delta);
@@ -302,7 +307,7 @@ let Danaids = new Phaser.Class({
     if (this.inBath) {
       if (this.fullPercentage === 0) {
         this.danaid.anims.play('exit_bath');
-        this.danaidBathInstructionsText.visible = true;
+        // this.danaidBathInstructionsText.visible = true;
         this.cleanPercentage = 0;
         this.danaidInformationText.visible = false;
         this.inBath = false;
