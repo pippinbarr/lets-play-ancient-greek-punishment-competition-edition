@@ -1,5 +1,9 @@
 # Let's Play: Ancient Greek Punishment: Competition Edition
 
+_Fly like an eagle! Climb every mountain! Reach for the stars! I mean apple! Empty your opponent's bathtub just before they get in!_
+
+---
+
 _Let's Play: Ancient Greek Punishment: Competition Edition_ is a new edition in the _Let's Play: Ancient Greek Punishment_ series, focusing on a retelling of five (kind of) mythological punishments. In the _Competition Edition_ the dream of a two-player experience of eternal punishment is finally at hand. Face off against your friends in the classic battle between punisher and punished.
 
 #### [Play Online](https://pippinbarr.github.io/lets-play-ancient-greek-punishment-competition-edition/) (Desktop only)

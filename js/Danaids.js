@@ -158,7 +158,7 @@ let Danaids = new Phaser.Class({
     this.bath.anims.play('bath_closed');
     this.holesOpen = false;
     this.emptying = false;
-    this.fullPercentage = 80;
+    this.fullPercentage = 0;
     this.currentPourAmount = 0;
     this.fillTime = 0;
     this.BATH_X = this.bath.x - 4*16;
