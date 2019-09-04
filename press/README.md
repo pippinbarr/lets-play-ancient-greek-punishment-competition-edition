@@ -8,7 +8,7 @@ _Fly like an eagle! Climb every mountain! Reach for the stars! I mean apple! Emp
 
 * Developer: [Pippin Barr](http://www.pippinbarr.com/)
 * Release: 29 August 2019
-* Platform: Browser (desktop and mobile)
+* Platform: Browser (desktop)
 * Code repository: https://github.com/pippinbarr/lets-play-ancient-greek-punishment-competition-edition
 * Price: $0.00
 
