@@ -1,4 +1,4 @@
-# Let's Play: Ancient Greek Punishment: Competition Edition
+# *Let's Play: Ancient Greek Punishment: Competition Edition*
 
 ![](images/lets-play-ancient-greek-punishment-competition-edition-banner.png)
 
