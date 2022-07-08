@@ -67,11 +67,6 @@ _Danaid vs. Bathtub_
 ![](images/zeno.png)  
 _Zeno vs. Flag_
 
-
-## Press
-
-- Coming soon?
-
 ## Additional Links
 
 - [Process documentation of _Let's Play: Ancient Greek Punishment: Competition Edition_](https://github.com/pippinbarr/lets-play-ancient-greek-punishment-competition-edition/blob/master/process/README.md)
